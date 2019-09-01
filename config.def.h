@@ -5,8 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-//default size 16
-static char *font = "mono:pixelsize=38:antialias=true:autohint=true";
+static char *font = "mono:pixelsize=16:antialias=true:autohint=true";
 static int borderpx = 2;
 
 /*
@@ -55,7 +54,7 @@ static unsigned int blinktimeout = 800;
 /*
  * thickness of underline and bar cursors
  */
-static unsigned int cursorthickness = 5;
+static unsigned int cursorthickness = 2;
 
 /*
  * bell volume. It must be a value between -100 and 100. Use 0 for disabling
@@ -84,64 +83,42 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* bg opacity */
-float alpha = 0.4;
+float alpha = 0.92;
 
-static const char *colorname[] = {
-  "#1d1f21", /* base00 some gray, contrast*/
-  "#f92672", /* base08 pink */
-  "#a6e22e", /* base0B lime green*/
-  "#f4bf75", /* base0A peach*/
-  "#66d9ef", /* base0D light blue*/
-  "#ae81ff", /* base0E lavender*/
-  "#a1efe4", /* base0C light cyan*/
-  "#f8f8f2", /* base05 white*/
-  "#75715e", /* base03 dirty green*/
-  "#fd971f", /* base09 orange*/
-  "#f92672", //base01
-  //"#383830", /* base01 dark gray*/
-  "#f9f8f5",  //base02
-  //"#49483e", /* base02 lighter dark gray*/
-  "#a59f85", /* base04 light gray*/
-  "#f5f4f1", /* base06 white again*/
-  "#cc6633", /* base0F good rust*/
-  "#f9f8f5", /* base07 whtie again again*/
-};
 /* Terminal colors (16 first used in escape sequence) */
-//static const char *colorname[] = {
-//	"#282828", /* hard contrast: #1d2021 / soft contrast: #32302f */
-//	"#cc241d",
-//	"#98971a",
-//	"#d79921",
-//	"#458588",
-//	"#b16286",
-//	"#689d6a",
-//	"#a89984",
-//	"#928374",
-//	"#fb4934",
-//	"#b8bb26",
-//	"#fabd2f",
-//	"#83a598",
-//	"#d3869b",
-//	"#8ec07c",
-//	"#ebdbb2",
-//	[255] = 0,
-//	/* more colors can be added after 255 to use with DefaultXX */
-//	"#282828",   /* 256 -> bg */
-//	"#ebdbb2",   /* 257 -> fg */
-//	"#add8e6", /* 258 -> cursor */
-//};
+static const char *colorname[] = {
+	"#282828", /* hard contrast: #1d2021 / soft contrast: #32302f */
+	"#cc241d",
+	"#98971a",
+	"#d79921",
+	"#458588",
+	"#b16286",
+	"#689d6a",
+	"#a89984",
+	"#928374",
+	"#fb4934",
+	"#b8bb26",
+	"#fabd2f",
+	"#83a598",
+	"#d3869b",
+	"#8ec07c",
+	"#ebdbb2",
+	[255] = 0,
+	/* more colors can be added after 255 to use with DefaultXX */
+	"#282828",   /* 256 -> bg */
+	"#ebdbb2",   /* 257 -> fg */
+	"#add8e6", /* 258 -> cursor */
+};
 
 
 /*
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
  */
-//unsigned int defaultfg = 257;
-unsigned int defaultfg = 11;
-//unsigned int defaultbg = 256;
+unsigned int defaultfg = 257;
 unsigned int defaultbg = 256;
-static unsigned int defaultcs = 14;
-static unsigned int defaultrcs = 14;
+static unsigned int defaultcs = 258;
+static unsigned int defaultrcs = 0;
 
 /*
  * Default shape of cursor
@@ -150,7 +127,7 @@ static unsigned int defaultrcs = 14;
  * 6: Bar ("|")
  * 7: Snowman ("☃")
  */
-static unsigned int cursorshape = 6;
+static unsigned int cursorshape = 2;
 
 /*
  * Default columns and rows numbers
@@ -163,8 +140,8 @@ static unsigned int rows = 24;
  * Default colour and shape of the mouse cursor
  */
 static unsigned int mouseshape = XC_xterm;
-static unsigned int mousefg = 11;
-static unsigned int mousebg = 11;
+static unsigned int mousefg = 7;
+static unsigned int mousebg = 0;
 
 /*
  * Color used to display font attributes when fontconfig selected a font which
@@ -195,7 +172,7 @@ ResourcePref resources[] = {
 		{ "color15",      STRING,  &colorname[15] },
 		{ "background",   STRING,  &colorname[256] },
 		{ "foreground",   STRING,  &colorname[257] },
-		{ "cursorColor",  STRING,  &colorname[11] },
+		{ "cursorColor",  STRING,  &colorname[258] },
 		{ "termname",     STRING,  &termname },
 		{ "shell",        STRING,  &shell },
 		{ "xfps",         INTEGER, &xfps },
@@ -365,7 +342,8 @@ static Key key[] = {
 	{ XK_KP_Delete,     ControlMask,    "\033[3;5~",    +1,    0},
 	{ XK_KP_Delete,     ShiftMask,      "\033[2K",      -1,    0},
 	{ XK_KP_Delete,     ShiftMask,      "\033[3;2~",    +1,    0},
-	{ XK_KP_Delete,     XK_ANY_MOD,     "\033[C\177",   +1,    0},
+	{ XK_KP_Delete,     XK_ANY_MOD,     "\033[P",       -1,    0},
+	{ XK_KP_Delete,     XK_ANY_MOD,     "\033[3~",      +1,    0},
 	{ XK_KP_Multiply,   XK_ANY_MOD,     "\033Oj",       +2,    0},
 	{ XK_KP_Add,        XK_ANY_MOD,     "\033Ok",       +2,    0},
 	{ XK_KP_Enter,      XK_ANY_MOD,     "\033OM",       +2,    0},
@@ -432,8 +410,9 @@ static Key key[] = {
 	{ XK_Delete,        ControlMask,    "\033[3;5~",    +1,    0},
 	{ XK_Delete,        ShiftMask,      "\033[2K",      -1,    0},
 	{ XK_Delete,        ShiftMask,      "\033[3;2~",    +1,    0},
-	{ XK_Delete,        XK_ANY_MOD,     "\033[C\177",       -1,    0},
-	{ XK_Delete,        XK_ANY_MOD,     "\033[C\177",   +1,    0},
+	{ XK_Delete,        XK_ANY_MOD,     "\033[P",       -1,    0},
+	{ XK_Delete,        XK_ANY_MOD,     "\033[3~",      +1,    0},
+	{ XK_BackSpace,     XK_NO_MOD,      "\177",          0,    0},
 	{ XK_BackSpace,     Mod1Mask,       "\033\177",      0,    0},
 	{ XK_Home,          ShiftMask,      "\033[2J",       0,   -1},
 	{ XK_Home,          ShiftMask,      "\033[1;2H",     0,   +1},
